@@ -41,6 +41,16 @@ namespace eCommerce.Infrastructure.DbContext
             );
             #endregion
 
+            #region Adding Super Admin User
+
+            Guid superAdminId = Guid.Parse("CD2A4FEE-8AA1-4756-8D84-F878F286FDBF");
+            var superAdmin = new Customer() { Id = superAdminId, Email = "superadmin@admin.com", NormalizedEmail = "SUPERADMIN@ADMIN.COM", UserName = "SuperAdmin", NormalizedUserName = "SUPERADMIN", Name = "Sourav Ganguly", SecurityStamp = superAdminId.ToString() };
+
+            superAdmin.PasswordHash = new PasswordHasher<Customer>().HashPassword(superAdmin, "SuperAdmin@1234");
+            modelBuilder.Entity<Customer>().HasData(
+                superAdmin
+                );
+            #endregion
 
             // Configure Composite Key for Wishlist (CustomerId, ProductId)
             modelBuilder.Entity<Wishlist>()

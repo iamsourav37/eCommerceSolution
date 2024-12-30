@@ -1,5 +1,8 @@
 using eCommerce.Core.Domain;
 using eCommerce.Core.Interfaces.RepositoryContracts;
+using eCommerce.Core.Interfaces.ServiceContracts;
+using eCommerce.Core.Mappings;
+using eCommerce.Core.Services;
 using eCommerce.Infrastructure.DbContext;
 using eCommerce.Infrastructure.Repository;
 using Microsoft.AspNetCore.Identity;
@@ -10,7 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-// DbContext Setup
+
+#region DbContext Setup
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -20,12 +25,15 @@ builder.Services.AddIdentity<Customer, IdentityRole<Guid>>()
     .AddDefaultTokenProviders()
     .AddUserStore<UserStore<Customer, IdentityRole<Guid>, ApplicationDbContext, Guid>>()
     .AddRoleStore<RoleStore<IdentityRole<Guid>, ApplicationDbContext, Guid>>();
-
+#endregion
 
 #region Add Repository
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
+// Add AutoMapper with the assembly containing the Profile
+builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 #endregion
 
 

@@ -1,5 +1,7 @@
 using eCommerce.Core.Domain;
+using eCommerce.Core.Interfaces.RepositoryContracts;
 using eCommerce.Infrastructure.DbContext;
+using eCommerce.Infrastructure.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +20,14 @@ builder.Services.AddIdentity<Customer, IdentityRole<Guid>>()
     .AddDefaultTokenProviders()
     .AddUserStore<UserStore<Customer, IdentityRole<Guid>, ApplicationDbContext, Guid>>()
     .AddRoleStore<RoleStore<IdentityRole<Guid>, ApplicationDbContext, Guid>>();
+
+
+#region Add Repository
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+#endregion
+
 
 // Add Controllers
 builder.Services.AddControllers();

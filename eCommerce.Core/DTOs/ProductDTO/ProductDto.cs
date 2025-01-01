@@ -1,4 +1,5 @@
 ﻿using eCommerce.Core.DTOs.Category;
+using eCommerce.Core.DTOs.CategoryDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +16,7 @@ namespace eCommerce.Core.DTOs.Product
         public double Price { get; set; }
         public int? Quantity { get; set; }
         public bool IsActive { get; set; }
-
-        public ICollection<CategoryDto>? Categories { get; set; }
+        public ICollection<CategoryResponse>? Categories { get; set; }
 
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedDate { get; set; } = DateTime.UtcNow;

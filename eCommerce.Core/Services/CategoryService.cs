@@ -40,7 +40,7 @@ namespace eCommerce.Core.Services
 
         public async Task<IEnumerable<CategoryDto>> GetAllCategories()
         {
-            var categoryList = await _unitOfWork.Categories.GetAllAsync();
+            var categoryList = await _unitOfWork.Categories.GetAllAsync("");
             var categoryDtoList = _mapper.Map<List<CategoryDto>>(categoryList);
             return categoryDtoList;
         }

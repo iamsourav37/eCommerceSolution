@@ -21,14 +21,17 @@ namespace eCommerce.Core.Mappings
             CreateMap<CategoryCreateDto, Category>();
             CreateMap<CategoryUpdateDto, Category>();
             CreateMap<Category, CategoryDto>();
+            CreateMap<Category, CategoryResponse>();
 
             #endregion
 
             #region For Product
 
-            CreateMap<ProductCreateDto, Product>();
+            CreateMap<ProductCreateDto, Product>().ForMember(dest => dest.Categories, opt => opt.Ignore()); ;
             CreateMap<ProductUpdateDto, ProductDto>();
-            CreateMap<Product, ProductDto>();
+            CreateMap<Product, ProductDto>()
+           .ForMember(dest => dest.Categories,
+                      opt => opt.MapFrom(src => src.Categories));
 
             #endregion
 

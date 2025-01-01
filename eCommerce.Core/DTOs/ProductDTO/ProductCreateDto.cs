@@ -1,4 +1,5 @@
 ﻿using eCommerce.Core.DTOs.Category;
+using eCommerce.Core.DTOs.CategoryDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace eCommerce.Core.DTOs.ProductDTO
         public int? Quantity { get; set; }
         public bool IsActive { get; set; }
 
-        public ICollection<CategoryDto>? Categories { get; set; }
+        public ICollection<Guid> CategoryIds { get; set; }
 
     }
 }

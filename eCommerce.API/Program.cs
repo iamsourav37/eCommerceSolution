@@ -31,6 +31,7 @@ builder.Services.AddIdentity<Customer, IdentityRole<Guid>>()
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 // Add AutoMapper with the assembly containing the Profile
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);

@@ -22,7 +22,15 @@ namespace eCommerce.Infrastructure.Repository
 
         public async Task<T> GetByIdAsync(Guid id) => await _dbSet.FindAsync(id);
 
-        public async Task<IEnumerable<T>> GetAllAsync() => await _dbSet.ToListAsync();
+        public async Task<IEnumerable<T>> GetAllAsync(string include = "")
+        {
+            IQueryable<T> query = _context.Set<T>();
+            if (!string.IsNullOrEmpty(include))
+            {
+                query = query.Include(include);
+            }
+            return await query.ToListAsync();
+        }
 
         public async Task AddAsync(T entity) => await _dbSet.AddAsync(entity);
 

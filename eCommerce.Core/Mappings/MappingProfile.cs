@@ -27,8 +27,8 @@ namespace eCommerce.Core.Mappings
 
             #region For Product
 
-            CreateMap<ProductCreateDto, Product>().ForMember(dest => dest.Categories, opt => opt.Ignore()); ;
-            CreateMap<ProductUpdateDto, ProductDto>();
+            CreateMap<ProductCreateDto, Product>().ForMember(dest => dest.Categories, opt => opt.Ignore());
+            CreateMap<ProductUpdateDto, Product>();
             CreateMap<Product, ProductDto>()
            .ForMember(dest => dest.Categories,
                       opt => opt.MapFrom(src => src.Categories));

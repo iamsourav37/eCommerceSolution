@@ -20,7 +20,16 @@ namespace eCommerce.Infrastructure.Repository
             _dbSet = _context.Set<T>();
         }
 
-        public async Task<T> GetByIdAsync(Guid id) => await _dbSet.FindAsync(id);
+        public async Task<T> GetByIdAsync(Guid id, string include="")
+        {
+            IQueryable<T> query = _context.Set<T>();
+            if (!string.IsNullOrEmpty(include))
+            {
+                query = query.Include(include);
+            }
+
+            return await query.FirstOrDefaultAsync(element => EF.Property<Guid>(element, "Id") == id);
+        }
 
         public async Task<IEnumerable<T>> GetAllAsync(string include = "")
         {

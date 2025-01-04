@@ -12,8 +12,8 @@ namespace eCommerce.Core.Interfaces.RepositoryContracts
     /// <typeparam name="T"></typeparam>
     public interface IRepository<T> where T : class
     {
-        Task<T> GetByIdAsync(Guid id);
-        Task<IEnumerable<T>> GetAllAsync(string include);
+        Task<T> GetByIdAsync(Guid id, string include = "");
+        Task<IEnumerable<T>> GetAllAsync(string include = "");
         Task AddAsync(T entity);
         void UpdateAsync(T entity);
         void DeleteAsync(T entity);

@@ -72,17 +72,45 @@ namespace eCommerce.Core.Services
 
         public async Task<ProductDto> GetProductById(Guid productId)
         {
-            var product = await _unitOfWork.Products.GetByIdAsync(productId);
+            var product = await _unitOfWork.Products.GetByIdAsync(productId, "Categories");
             var productDto = _mapper.Map<ProductDto>(product);
             return productDto;
         }
 
         public async Task<ProductDto> UpdateProduct(ProductUpdateDto productUpdateDto)
         {
-            var product = _mapper.Map<Product>(productUpdateDto);
-            _unitOfWork.Products.UpdateAsync(product);
+
+            var existingProduct = await _unitOfWork.Products.GetByIdAsync(productUpdateDto.Id, "Categories");
+
+            if (existingProduct == null)
+            {
+                throw new InvalidOperationException("Product not found. Invalid Id");
+            }
+
+            _mapper.Map(productUpdateDto, existingProduct);
+
+            var categoryIdList = productUpdateDto.CategoryIds;
+            var categoryList = new List<Category>();
+            // Fetch categories from the database
+            foreach (var categoryId in categoryIdList)
+            {
+                var category = await _unitOfWork.Categories.GetByIdAsync(categoryId);
+
+                if (category == null)
+                {
+                    throw new Exception("No valid categories found for the provided Category IDs.");
+                }
+                categoryList.Add(category);
+            }
+            existingProduct.Categories?.Clear();
+            await _unitOfWork.SaveChangesAsync();
+
+
+            existingProduct.Categories = categoryList;
+
+            _unitOfWork.Products.UpdateAsync(existingProduct);
             var result = await _unitOfWork.SaveChangesAsync();
-            var productDto = _mapper.Map<ProductDto>(product);
+            var productDto = _mapper.Map<ProductDto>(existingProduct);
             return productDto;
         }
     }

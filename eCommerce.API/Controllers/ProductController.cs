@@ -23,12 +23,34 @@ namespace eCommerce.API.Controllers
             return Ok(productDtoList);
         }
 
+
+        [HttpGet("productId:Guid")]
+        public async Task<IActionResult> Get(Guid productId)
+        {
+            var productDtoList = await _productService.GetProductById(productId);
+            return Ok(productDtoList);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Post(ProductCreateDto productCreateDto)
         {
             var createdProduct = await _productService.CreateProduct(productCreateDto);
             return Ok(createdProduct);
 
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put(ProductUpdateDto productUpdateDto)
+        {
+            var updatedProduct = await _productService.UpdateProduct(productUpdateDto);
+            return Ok(updatedProduct);
+        }
+
+        [HttpDelete("productId: Guid")]
+        public async Task<IActionResult> Delete(Guid productid)
+        {
+            var result = await _productService.DeleteProduct(productid);
+            return Ok(result);
         }
     }
 }

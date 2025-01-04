@@ -2,8 +2,10 @@
 using eCommerce.Core.DTOs.CategoryDTO;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace eCommerce.Core.DTOs.ProductDTO
@@ -17,6 +19,7 @@ namespace eCommerce.Core.DTOs.ProductDTO
         public int? Quantity { get; set; }
         public bool IsActive { get; set; }
 
-        public ICollection<Guid>? CategoryIds { get; set; }
+        public ICollection<Guid> CategoryIds { get; set; }
+
     }
 }

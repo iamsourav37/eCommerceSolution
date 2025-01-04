@@ -24,21 +24,7 @@ namespace eCommerce.Core.Services
         }
         public async Task<ProductDto> CreateProduct(ProductCreateDto productCreateDto)
         {
-            var categoryIdList = productCreateDto.CategoryIds;
-            var categoryList = new List<Category>();
-            // Fetch categories from the database
-            foreach (var categoryId in categoryIdList)
-            {
-                var category = await _unitOfWork.Categories.GetByIdAsync(categoryId);
-
-                if (category == null)
-                {
-                    throw new Exception("No valid categories found for the provided Category IDs.");
-                }
-                categoryList.Add(category);
-            }
-
-
+            var categoryList = await this.GetCategoryList(productCreateDto.CategoryIds);
 
             var productDomain = _mapper.Map<Product>(productCreateDto);
             productDomain.Categories = categoryList;
@@ -79,7 +65,6 @@ namespace eCommerce.Core.Services
 
         public async Task<ProductDto> UpdateProduct(ProductUpdateDto productUpdateDto)
         {
-
             var existingProduct = await _unitOfWork.Products.GetByIdAsync(productUpdateDto.Id, "Categories");
 
             if (existingProduct == null)
@@ -88,20 +73,9 @@ namespace eCommerce.Core.Services
             }
 
             _mapper.Map(productUpdateDto, existingProduct);
+            var categoryList = await this.GetCategoryList(productUpdateDto.CategoryIds);
 
-            var categoryIdList = productUpdateDto.CategoryIds;
-            var categoryList = new List<Category>();
-            // Fetch categories from the database
-            foreach (var categoryId in categoryIdList)
-            {
-                var category = await _unitOfWork.Categories.GetByIdAsync(categoryId);
-
-                if (category == null)
-                {
-                    throw new Exception("No valid categories found for the provided Category IDs.");
-                }
-                categoryList.Add(category);
-            }
+            // Clearing the Categories first for existing category duplicate scenario
             existingProduct.Categories?.Clear();
             await _unitOfWork.SaveChangesAsync();
 
@@ -113,6 +87,24 @@ namespace eCommerce.Core.Services
             var result = await _unitOfWork.SaveChangesAsync();
             var productDto = _mapper.Map<ProductDto>(existingProduct);
             return productDto;
+        }
+
+
+        private async Task<List<Category>> GetCategoryList(ICollection<Guid> categoryIds)
+        {
+            var categoryList = new List<Category>();
+            // Fetch categories from the database
+            foreach (var categoryId in categoryIds)
+            {
+                var category = await _unitOfWork.Categories.GetByIdAsync(categoryId);
+
+                if (category == null)
+                {
+                    throw new Exception("No valid categories found for the provided Category IDs.");
+                }
+                categoryList.Add(category);
+            }
+            return categoryList;
         }
     }
 }

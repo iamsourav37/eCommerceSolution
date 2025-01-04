@@ -12,8 +12,8 @@ using eCommerce.Infrastructure.DbContext;
 namespace eCommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241229105611_AddSuperAdmin")]
-    partial class AddSuperAdmin
+    [Migration("20250104154518_AddTableToDb")]
+    partial class AddTableToDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -191,6 +191,100 @@ namespace eCommerce.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("eCommerce.Core.Domain.Account", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("CustomerDetailsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerDetailsId");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("cd2a4fee-8aa1-4756-8d84-f878f286fdbf"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "8b90fc7e-2c2d-4199-a4b5-a69b7cea5df3",
+                            Email = "superadmin@admin.com",
+                            EmailConfirmed = false,
+                            FullName = "Sourav Ganguly",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "SUPERADMIN@ADMIN.COM",
+                            NormalizedUserName = "SUPERADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMQrICbOBUr+ZM+EmWJgxFqGsT1qYbBgp1ODafE0qHqGDkbHlWAEZPqgDstXYh65SQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "cd2a4fee-8aa1-4756-8d84-f878f286fdbf",
+                            TwoFactorEnabled = false,
+                            UserName = "SuperAdmin"
+                        });
+                });
+
             modelBuilder.Entity("eCommerce.Core.Domain.Address", b =>
                 {
                     b.Property<Guid>("Id")
@@ -278,95 +372,19 @@ namespace eCommerce.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("cd2a4fee-8aa1-4756-8d84-f878f286fdbf"),
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "36374cfb-1243-4e5a-9f04-4eef66e7359f",
-                            CreatedDate = new DateTime(2024, 12, 29, 10, 56, 10, 503, DateTimeKind.Utc).AddTicks(2091),
-                            Email = "superadmin@admin.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            Name = "Sourav Ganguly",
-                            NormalizedEmail = "SUPERADMIN@ADMIN.COM",
-                            NormalizedUserName = "SUPERADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOIgnixcXdVKJobE89qxmwQQWD+GEKkXpWX1HDu+kI6yFAeg6aUYa6KdrGIuHnp2EQ==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "cd2a4fee-8aa1-4756-8d84-f878f286fdbf",
-                            TwoFactorEnabled = false,
-                            UpdatedDate = new DateTime(2024, 12, 29, 10, 56, 10, 503, DateTimeKind.Utc).AddTicks(2093),
-                            UserName = "SuperAdmin"
-                        });
+                    b.ToTable("Customer");
                 });
 
             modelBuilder.Entity("eCommerce.Core.Domain.LineItem", b =>
@@ -519,7 +537,7 @@ namespace eCommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("eCommerce.Core.Domain.Customer", null)
+                    b.HasOne("eCommerce.Core.Domain.Account", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -528,7 +546,7 @@ namespace eCommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("eCommerce.Core.Domain.Customer", null)
+                    b.HasOne("eCommerce.Core.Domain.Account", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -543,7 +561,7 @@ namespace eCommerce.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("eCommerce.Core.Domain.Customer", null)
+                    b.HasOne("eCommerce.Core.Domain.Account", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -552,11 +570,20 @@ namespace eCommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("eCommerce.Core.Domain.Customer", null)
+                    b.HasOne("eCommerce.Core.Domain.Account", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("eCommerce.Core.Domain.Account", b =>
+                {
+                    b.HasOne("eCommerce.Core.Domain.Customer", "CustomerDetails")
+                        .WithMany()
+                        .HasForeignKey("CustomerDetailsId");
+
+                    b.Navigation("CustomerDetails");
                 });
 
             modelBuilder.Entity("eCommerce.Core.Domain.Address", b =>

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eCommerce.Infrastructure.DbContext
 {
-    public class ApplicationDbContext : IdentityDbContext<Customer, IdentityRole<Guid>, Guid>
+    public class ApplicationDbContext : IdentityDbContext<Account, IdentityRole<Guid>, Guid>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -44,10 +44,10 @@ namespace eCommerce.Infrastructure.DbContext
             #region Adding Super Admin User
 
             Guid superAdminId = Guid.Parse("CD2A4FEE-8AA1-4756-8D84-F878F286FDBF");
-            var superAdmin = new Customer() { Id = superAdminId, Email = "superadmin@admin.com", NormalizedEmail = "SUPERADMIN@ADMIN.COM", UserName = "SuperAdmin", NormalizedUserName = "SUPERADMIN", Name = "Sourav Ganguly", SecurityStamp = superAdminId.ToString() };
+            var superAdmin = new Account() { Id = superAdminId, Email = "superadmin@admin.com", NormalizedEmail = "SUPERADMIN@ADMIN.COM", UserName = "SuperAdmin", NormalizedUserName = "SUPERADMIN", FullName = "Sourav Ganguly", SecurityStamp = superAdminId.ToString() };
 
-            superAdmin.PasswordHash = new PasswordHasher<Customer>().HashPassword(superAdmin, "SuperAdmin@1234");
-            modelBuilder.Entity<Customer>().HasData(
+            superAdmin.PasswordHash = new PasswordHasher<Account>().HashPassword(superAdmin, "SuperAdmin@1234");
+            modelBuilder.Entity<Account>().HasData(
                 superAdmin
                 );
             #endregion

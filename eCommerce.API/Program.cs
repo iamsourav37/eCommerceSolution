@@ -20,10 +20,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Identity Setup
-builder.Services.AddIdentity<Customer, IdentityRole<Guid>>()
+builder.Services.AddIdentity<Account, IdentityRole<Guid>>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders()
-    .AddUserStore<UserStore<Customer, IdentityRole<Guid>, ApplicationDbContext, Guid>>()
+    .AddUserStore<UserStore<Account, IdentityRole<Guid>, ApplicationDbContext, Guid>>()
     .AddRoleStore<RoleStore<IdentityRole<Guid>, ApplicationDbContext, Guid>>();
 #endregion
 

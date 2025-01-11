@@ -10,6 +10,6 @@ namespace eCommerce.Core.Interfaces.RepositoryContracts
 {
     public interface ITokenRepository
     {
-        Task GenerateToken(IdentityUser user, List<string> roles);
+        string GenerateToken(Account user, List<string> roles);
     }
 }

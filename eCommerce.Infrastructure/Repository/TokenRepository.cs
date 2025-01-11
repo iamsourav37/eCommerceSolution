@@ -1,18 +1,56 @@
-﻿using eCommerce.Core.Interfaces.RepositoryContracts;
+﻿using eCommerce.Core.Domain;
+using eCommerce.Core.Interfaces.RepositoryContracts;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.VisualBasic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace eCommerce.Infrastructure.Repository
 {
     public class TokenRepository : ITokenRepository
     {
-        public Task GenerateToken(IdentityUser user, List<string> roles)
+        private readonly IConfiguration _configuration;
+
+        public TokenRepository(IConfiguration configuration)
         {
-            throw new NotImplementedException();
+            this._configuration = configuration;
+        }
+
+        public string GenerateToken(Account user, List<string> roles)
+        {
+
+            string jwtToken = string.Empty;
+
+            // Create Claims
+            var claims = new List<Claim>();
+            claims.Add(new Claim(ClaimTypes.Email, user.Email));
+            claims.Add(new Claim(ClaimTypes.Name, user.FullName));
+
+            // Add Roles
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._configuration["JWT:Key"]));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                _configuration["JWT:Issuer"],
+                _configuration["JWT:Audience"],
+                claims,
+                expires: DateTime.UtcNow.AddMinutes(int.Parse(_configuration["JWT:ExpiresIn"])),
+                signingCredentials: credentials
+                );
+            jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwtToken;
+
         }
     }
 }

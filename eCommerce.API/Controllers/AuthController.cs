@@ -1,6 +1,9 @@
 ﻿using eCommerce.API.Utility;
 using eCommerce.Core.Domain;
+using eCommerce.Core.DTOs.AuthDto;
+using eCommerce.Core.DTOs.CustomerDTO;
 using eCommerce.Core.Interfaces.RepositoryContracts;
+using eCommerce.Core.Interfaces.ServiceContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,80 +14,96 @@ namespace eCommerce.API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        //private readonly UserManager<Customer> _userManager;
-        //private readonly RoleManager<IdentityRole> _roleManager;
-        //private readonly ITokenRepository _tokenRepository;
-        //private ApiResponse _response;
+        private readonly UserManager<Account> _userManager;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly ITokenRepository _tokenRepository;
+        private readonly ICustomerService _customerService;
+        private ApiResponse _response;
 
-        //public AuthController(UserManager<Customer> userManager, RoleManager<IdentityRole> roleManager, ITokenRepository tokenRepository)
-        //{
-        //    _response = new ApiResponse();
-        //    this._userManager = userManager;
-        //    this._roleManager = roleManager;
-        //    this._tokenRepository = tokenRepository;
+        public AuthController(UserManager<Account> userManager, ITokenRepository tokenRepository, ICustomerService customerService, RoleManager<IdentityRole<Guid>> roleManager)
+        {
+            _response = new ApiResponse();
+            this._userManager = userManager;
+            this._roleManager = roleManager;
+            this._tokenRepository = tokenRepository;
+            this._customerService = customerService;
+        }
 
-        //}
+        [HttpPost]
+        [Route("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDto registerDTO)
+        {
 
-        //[HttpPost]
-        //[Route("register")]
-        //public async Task<IActionResult> Register([FromBody] RegisterDTO registerDTO)
-        //{
+            var identityUser = new Account()
+            {
+                UserName = registerDTO.Email,
+                Email = registerDTO.Email,
+                FullName = registerDTO.FullName,
+                NormalizedEmail = registerDTO.Email.ToUpper(),
+                NormalizedUserName = registerDTO.Email.ToUpper()
+            };
 
-        //    var identityUser = new IdentityUser()
-        //    {
-        //        UserName = registerDTO.Username,
-        //        Email = registerDTO.Username
-        //    };
+            var identityResult = await _userManager.CreateAsync(identityUser, registerDTO.Password);
+            if (identityResult.Succeeded)
+            {
+                var identityRole = await _roleManager.FindByNameAsync(Constants.CUSTOMER_ROLE);
+                if (identityRole != null)
+                {
+                    await _userManager.AddToRoleAsync(identityUser, Constants.CUSTOMER_ROLE);
+                }
 
-        //    var identityResult = await _userManager.CreateAsync(identityUser, registerDTO.Password);
-        //    if (identityResult.Succeeded)
-        //    {
-        //        if (registerDTO.Roles.Length > 0)
-        //        {
-        //            for (int i = 0; i < registerDTO.Roles.Length; i++)
-        //            {
-        //                var identityRole = await _roleManager.FindByNameAsync(registerDTO.Roles[i]);
-        //                if (identityRole != null)
-        //                {
-        //                    await _userManager.AddToRoleAsync(identityUser, registerDTO.Roles[i]);
-        //                }
-        //            }
+                // Now create the Customer
+                var customerCreateDto = new CustomerCreateDto()
+                {
+                    Name = registerDTO.FullName,
+                    AccountId = identityUser.Id,
+                };
 
-        //        }
-        //        _response.SetResponse(true, "User Registered Successfully.", null);
-        //        return Ok(_response);
+                var createdCustomer = await this._customerService.CreateCustomerAsync(customerCreateDto);
 
-        //    }
-        //    var errorList = new List<string>();
-        //    foreach (var error in identityResult.Errors)
-        //    {
-        //        errorList.Add(error.Description);
-        //    }
-        //    _response.SetResponse(false, null, errorList.ToArray());
-        //    return BadRequest(_response);
-        //}
+                if (createdCustomer == null)
+                {
+                    _response.SetResponse(false, 400, "Failed to register!", null);
+                    return BadRequest(_response);
+                }
 
-        //[HttpPost]
-        //[Route("login")]
-        //public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
-        //{
-        //    var user = await _userManager.FindByEmailAsync(loginDTO.Username);
-        //    if (user != null)
-        //    {
-        //        var isValidPassword = await _userManager.CheckPasswordAsync(user, loginDTO.Password);
+                _response.SetResponse(true, 201, "User Registered Successfully!", null);
+                return Ok(_response);
 
-        //        if (isValidPassword)
-        //        {
-        //            var roles = await _userManager.GetRolesAsync(user);
-        //            // Create the JWT Token
-        //            var token = _tokenRepository.CreateJWTToken(user, roles.ToList());
-        //            _response.SetResponse(true, new { token = token, expiresIn = 20 }, null);
-        //            return Ok(_response);
-        //        }
+            }
 
-        //    }
-        //    _response.SetResponse(false, null, ["Login Failed, Check the username and password"]);
-        //    return BadRequest(_response);
-        //}
+            #region Failed to create the Account
+            var errorList = new List<string>();
+            foreach (var error in identityResult.Errors)
+            {
+                errorList.Add(error.Description);
+            }
+            _response.SetResponse(false, 400, null, errorList.ToArray());
+            return BadRequest(_response);
+            #endregion
+        }
+
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+        {
+            var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            if (user != null)
+            {
+                var isValidPassword = await _userManager.CheckPasswordAsync(user, loginDto.Password);
+
+                if (isValidPassword)
+                {
+                    var roles = await _userManager.GetRolesAsync(user);
+                    // Create the JWT Token
+                    var token = _tokenRepository.GenerateToken(user, roles.ToList());
+                    _response.SetResponse(true, 200, new { token = token, expiresIn = Constants.TOKEN_EXPIRES_TIME }, null);
+                    return Ok(_response);
+                }
+
+            }
+            _response.SetResponse(false, 400, null, ["Login Failed, Check the username and password"]);
+            return BadRequest(_response);
+        }
     }
 }

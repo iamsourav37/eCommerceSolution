@@ -2,6 +2,7 @@
 using eCommerce.Core.Domain;
 using eCommerce.Core.DTOs.Category;
 using eCommerce.Core.DTOs.CategoryDTO;
+using eCommerce.Core.DTOs.CustomerDTO;
 using eCommerce.Core.DTOs.Product;
 using eCommerce.Core.DTOs.ProductDTO;
 using System;
@@ -33,6 +34,12 @@ namespace eCommerce.Core.Mappings
            .ForMember(dest => dest.Categories,
                       opt => opt.MapFrom(src => src.Categories));
 
+            #endregion
+
+
+            #region For Customer
+            CreateMap<CustomerCreateDto, Customer>();
+            CreateMap<Customer, CustomerDto>().ForMember(dest => dest.Orders, opt => opt.Ignore());
             #endregion
 
 

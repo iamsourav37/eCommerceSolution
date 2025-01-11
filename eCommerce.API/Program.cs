@@ -32,7 +32,8 @@ builder.Services.AddIdentity<Account, IdentityRole<Guid>>()
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
-
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 // Add AutoMapper with the assembly containing the Profile
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 #endregion

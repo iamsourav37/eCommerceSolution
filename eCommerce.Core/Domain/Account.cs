@@ -10,7 +10,5 @@ namespace eCommerce.Core.Domain
     public class Account : IdentityUser<Guid>
     {
         public string FullName { get; set; }
-
-        public Customer? CustomerDetails { get; set; }
     }
 }

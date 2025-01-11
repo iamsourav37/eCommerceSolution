@@ -201,9 +201,6 @@ namespace eCommerce.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("CustomerDetailsId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -250,8 +247,6 @@ namespace eCommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerDetailsId");
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -267,14 +262,14 @@ namespace eCommerce.Infrastructure.Migrations
                         {
                             Id = new Guid("cd2a4fee-8aa1-4756-8d84-f878f286fdbf"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8b90fc7e-2c2d-4199-a4b5-a69b7cea5df3",
+                            ConcurrencyStamp = "832ec862-7a00-4a4e-b68f-f44ed57dc2c4",
                             Email = "superadmin@admin.com",
                             EmailConfirmed = false,
                             FullName = "Sourav Ganguly",
                             LockoutEnabled = false,
                             NormalizedEmail = "SUPERADMIN@ADMIN.COM",
                             NormalizedUserName = "SUPERADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMQrICbOBUr+ZM+EmWJgxFqGsT1qYbBgp1ODafE0qHqGDkbHlWAEZPqgDstXYh65SQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJM1BcEGEPGc+f87fYs5mqvgV46hMpIzTMFIgI1pV6LmBqIlcKcYDRyxnaMgQDM9aw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "cd2a4fee-8aa1-4756-8d84-f878f286fdbf",
                             TwoFactorEnabled = false,
@@ -369,6 +364,9 @@ namespace eCommerce.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -381,7 +379,9 @@ namespace eCommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customer");
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("eCommerce.Core.Domain.LineItem", b =>
@@ -574,15 +574,6 @@ namespace eCommerce.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("eCommerce.Core.Domain.Account", b =>
-                {
-                    b.HasOne("eCommerce.Core.Domain.Customer", "CustomerDetails")
-                        .WithMany()
-                        .HasForeignKey("CustomerDetailsId");
-
-                    b.Navigation("CustomerDetails");
-                });
-
             modelBuilder.Entity("eCommerce.Core.Domain.Address", b =>
                 {
                     b.HasOne("eCommerce.Core.Domain.Customer", "Customer")
@@ -592,6 +583,17 @@ namespace eCommerce.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("eCommerce.Core.Domain.Customer", b =>
+                {
+                    b.HasOne("eCommerce.Core.Domain.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("eCommerce.Core.Domain.LineItem", b =>

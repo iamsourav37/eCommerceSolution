@@ -51,7 +51,18 @@ namespace eCommerce.Infrastructure.DbContext
             modelBuilder.Entity<Account>().HasData(
                 superAdmin
                 );
+
+
             #endregion
+
+            #region Adding SuperAdmin to all Roles
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
+                new IdentityUserRole<Guid> { UserId = superAdminId, RoleId = superAdminRoleId },
+                new IdentityUserRole<Guid> { UserId = superAdminId, RoleId = adminRoleId },
+                new IdentityUserRole<Guid> { UserId = superAdminId, RoleId = customerRoleId }
+            );
+            #endregion
+
 
             // Configure Composite Key for Wishlist (CustomerId, ProductId)
             modelBuilder.Entity<Wishlist>()

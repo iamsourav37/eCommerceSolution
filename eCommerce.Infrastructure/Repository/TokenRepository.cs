@@ -44,7 +44,7 @@ namespace eCommerce.Infrastructure.Repository
                 _configuration["JWT:Issuer"],
                 _configuration["JWT:Audience"],
                 claims,
-                expires: DateTime.UtcNow.AddMinutes(int.Parse(_configuration["JWT:ExpiresIn"])),
+                expires: DateTime.UtcNow.AddHours(int.Parse(_configuration["JWT:ExpiresIn"])),
                 signingCredentials: credentials
                 );
             jwtToken = new JwtSecurityTokenHandler().WriteToken(token);

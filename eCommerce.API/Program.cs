@@ -5,9 +5,12 @@ using eCommerce.Core.Mappings;
 using eCommerce.Core.Services;
 using eCommerce.Infrastructure.DbContext;
 using eCommerce.Infrastructure.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,11 +23,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Identity Setup
-builder.Services.AddIdentity<Account, IdentityRole<Guid>>()
+builder.Services.AddIdentityCore<Account>()
+    .AddRoles<IdentityRole<Guid>>()
+    .AddTokenProvider<DataProtectorTokenProvider<Account>>("Sourav Ganguly Provider")
     .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders()
-    .AddUserStore<UserStore<Account, IdentityRole<Guid>, ApplicationDbContext, Guid>>()
-    .AddRoleStore<RoleStore<IdentityRole<Guid>, ApplicationDbContext, Guid>>();
+    .AddDefaultTokenProviders();
+
 #endregion
 
 #region Add Repository
@@ -45,6 +49,27 @@ builder.Services.AddControllers();
 // Configure Swagger for OpenAPI Documentation
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+#region JWT Configuration
+
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["JWT:Issuer"],
+            ValidAudience = builder.Configuration["JWT:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
+        };
+    });
+#endregion
+
 
 var app = builder.Build();
 

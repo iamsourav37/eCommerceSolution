@@ -1,6 +1,7 @@
 ﻿using eCommerce.API.Utility;
 using eCommerce.Core.DTOs.ProductDTO;
 using eCommerce.Core.Interfaces.ServiceContracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -21,6 +22,7 @@ namespace eCommerce.API.Controllers
             _apiResponse = new ApiResponse();
         }
 
+
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -30,7 +32,7 @@ namespace eCommerce.API.Controllers
         }
 
 
-        [HttpGet("productId:Guid")]
+        [HttpGet("{productId:Guid}")]
         public async Task<IActionResult> Get(Guid productId)
         {
             var productDtoList = await _productService.GetProductById(productId);
@@ -38,6 +40,7 @@ namespace eCommerce.API.Controllers
             return Ok(_apiResponse);
         }
 
+        [Authorize(Roles =Constants.ADMIN_ROLE)]
         [HttpPost]
         public async Task<IActionResult> Post(ProductCreateDto productCreateDto)
         {
@@ -47,6 +50,7 @@ namespace eCommerce.API.Controllers
 
         }
 
+        [Authorize(Roles = Constants.ADMIN_ROLE)]
         [HttpPut]
         public async Task<IActionResult> Put([FromBody] ProductUpdateDto productUpdateDto)
         {
@@ -60,7 +64,8 @@ namespace eCommerce.API.Controllers
             return Ok(updatedProduct);
         }
 
-        [HttpDelete("productId: Guid")]
+        [Authorize(Roles = Constants.ADMIN_ROLE)]
+        [HttpDelete("{productId:Guid}")]
         public async Task<IActionResult> Delete(Guid productid)
         {
             var result = await _productService.DeleteProduct(productid);

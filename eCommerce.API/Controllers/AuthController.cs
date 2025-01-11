@@ -49,7 +49,7 @@ namespace eCommerce.API.Controllers
                 var identityRole = await _roleManager.FindByNameAsync(Constants.CUSTOMER_ROLE);
                 if (identityRole != null)
                 {
-                    await _userManager.AddToRoleAsync(identityUser, Constants.CUSTOMER_ROLE);
+                    await _userManager.AddToRoleAsync(identityUser, Constants.ADMIN_ROLE);
                 }
 
                 // Now create the Customer

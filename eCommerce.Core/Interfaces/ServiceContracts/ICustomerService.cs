@@ -11,5 +11,9 @@ namespace eCommerce.Core.Interfaces.ServiceContracts
     public interface ICustomerService
     {
         Task<CustomerDto> CreateCustomerAsync(CustomerCreateDto customerCreateDto);
+        Task<List<CustomerDto>> GetAllCustomerAsync();
+        Task<CustomerDto> GetCustomerByIdAsync(Guid customerId);
+        Task<CustomerDto> UpdateCustomerAsync(CustomerUpdateDto customerUpdateDto);
+
     }
 }

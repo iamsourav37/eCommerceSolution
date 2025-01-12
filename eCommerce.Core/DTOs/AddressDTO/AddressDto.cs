@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace eCommerce.Core.Domain
+namespace eCommerce.Core.DTOs.AddressDTO
 {
-    public class Address
+    public class AddressDto
     {
         public Guid Id { get; set; }
         public string FullName { get; set; }
@@ -20,15 +18,5 @@ namespace eCommerce.Core.Domain
         public string Country { get; set; }
         public string PinCode { get; set; }
         public string PhoneNumber { get; set; }
-
-        public Guid CustomerId { get; set; }
-
-        [JsonIgnore]
-        public Customer Customer { get; set; }
-
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
-        public DateTime UpdatedDate { get; set; } = DateTime.UtcNow;
-
-        
     }
 }

@@ -9,5 +9,6 @@ namespace eCommerce.Core.Interfaces.RepositoryContracts
 {
     public interface ICustomerRepository : IRepository<Customer>
     {
+        Task<Customer> GetCustomerIdByAccountId(Guid accountId);
     }
 }

@@ -42,6 +42,7 @@ builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 #endregion
 
+builder.Services.AddHttpContextAccessor();
 
 // Add Controllers
 builder.Services.AddControllers();

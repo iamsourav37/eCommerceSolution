@@ -29,6 +29,7 @@ namespace eCommerce.Infrastructure.Repository
             var claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.Email, user.Email));
             claims.Add(new Claim(ClaimTypes.Name, user.FullName));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
 
             // Add Roles
             foreach (var role in roles)

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using eCommerce.Core.Domain;
+using eCommerce.Core.DTOs.AddressDTO;
 using eCommerce.Core.DTOs.Category;
 using eCommerce.Core.DTOs.CategoryDTO;
 using eCommerce.Core.DTOs.CustomerDTO;
@@ -36,10 +37,16 @@ namespace eCommerce.Core.Mappings
 
             #endregion
 
+            CreateMap<AddressCreateDto, Address>();
+            CreateMap<Address, AddressDto>();
 
             #region For Customer
             CreateMap<CustomerCreateDto, Customer>();
-            CreateMap<Customer, CustomerDto>().ForMember(dest => dest.Orders, opt => opt.Ignore());
+            CreateMap<Customer, CustomerDto>().ForMember(dest => dest.Orders, opt => opt.Ignore())
+                .ForMember(dest => dest.Addresses, opt => opt.MapFrom(src => src.Addresses)); ;
+            CreateMap<CustomerUpdateDto, Customer>()
+                .ForMember(dest => dest.Addresses, opt => opt.MapFrom(src => src.Addresses));
+
             #endregion
 
 

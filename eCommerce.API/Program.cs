@@ -52,8 +52,6 @@ builder.Services.AddSwaggerGen();
 
 
 #region JWT Configuration
-
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

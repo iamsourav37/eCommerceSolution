@@ -48,17 +48,29 @@ namespace eCommerce.Core.Services
         public async Task<CategoryDto> GetCategoryById(Guid categoryId)
         {
             var category = await _unitOfWork.Categories.GetByIdAsync(categoryId);
-            if(category == null)
+            if (category == null)
             {
-
+                return null;
             }
             var categoryDto = _mapper.Map<CategoryDto>(category);
             return categoryDto;
         }
 
-        public Task<CategoryDto> UpdateCategory(CategoryUpdateDto categoryUpdateDto)
+        public async Task<CategoryDto> UpdateCategory(CategoryUpdateDto categoryUpdateDto)
         {
-            throw new NotImplementedException();
+            var categoryDomainModel = _mapper.Map<Category>(categoryUpdateDto);
+            categoryDomainModel.UpdatedDate = DateTime.UtcNow;
+            _unitOfWork.Categories.UpdateAsync(categoryDomainModel);
+            int result = await _unitOfWork.SaveChangesAsync();
+
+            if (result > 0)
+            {
+                var categoryDto = _mapper.Map<CategoryDto>(categoryDomainModel);
+                return categoryDto;
+            }
+
+            return null;
+
         }
     }
 }

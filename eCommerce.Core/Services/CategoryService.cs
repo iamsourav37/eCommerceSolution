@@ -33,9 +33,25 @@ namespace eCommerce.Core.Services
             return categoryDto;
         }
 
-        public Task<bool> DeleteCategoryById(Guid categoryId)
+        public async Task<bool> DeleteCategoryById(Guid categoryId)
         {
-            throw new NotImplementedException();
+            // Retrieve the existing category from the database
+            var existingCategory = await _unitOfWork.Categories.GetByIdAsync(categoryId);
+
+            if (existingCategory == null)
+            {
+                // Optionally, throw an exception or return null/error if not found
+                return false;
+            }
+            _unitOfWork.Categories.DeleteAsync(existingCategory);
+            var result = await _unitOfWork.SaveChangesAsync();
+
+            if (result == 0)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public async Task<IEnumerable<CategoryDto>> GetAllCategories()
@@ -58,19 +74,34 @@ namespace eCommerce.Core.Services
 
         public async Task<CategoryDto> UpdateCategory(CategoryUpdateDto categoryUpdateDto)
         {
-            var categoryDomainModel = _mapper.Map<Category>(categoryUpdateDto);
-            categoryDomainModel.UpdatedDate = DateTime.UtcNow;
-            _unitOfWork.Categories.UpdateAsync(categoryDomainModel);
+            // Retrieve the existing category from the database
+            var existingCategory = await _unitOfWork.Categories.GetByIdAsync(categoryUpdateDto.Id);
+
+            if (existingCategory == null)
+            {
+                // Optionally, throw an exception or return null/error if not found
+                return null;
+            }
+
+            // Map only updated fields from the DTO to the existing entity
+            _mapper.Map(categoryUpdateDto, existingCategory);
+
+            // Update audit fields
+            existingCategory.UpdatedDate = DateTime.UtcNow;
+
+            // Update the category in the database
+            _unitOfWork.Categories.UpdateAsync(existingCategory);
             int result = await _unitOfWork.SaveChangesAsync();
 
             if (result > 0)
             {
-                var categoryDto = _mapper.Map<CategoryDto>(categoryDomainModel);
-                return categoryDto;
+                // Map the updated entity to a DTO and return
+                return _mapper.Map<CategoryDto>(existingCategory);
             }
 
+            // Return null if no changes were saved
             return null;
-
         }
+
     }
 }

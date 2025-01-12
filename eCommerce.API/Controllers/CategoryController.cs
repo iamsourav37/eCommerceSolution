@@ -73,5 +73,23 @@ namespace eCommerce.API.Controllers
             _response.SetResponse(true, 200, updatedCategory, null);
             return Ok(_response);
         }
+
+        [HttpDelete("{categoryId:guid}")]
+        public async Task<IActionResult> Delete(Guid categoryId)
+        {
+
+            var isDeleted = await _categoryService.DeleteCategoryById(categoryId);
+
+            if(isDeleted)
+            {
+                _response.SetResponse(true, 200, "Deleted Successfully !", null);
+                return Ok(_response);
+            }
+
+            _response.SetResponse(false, 404, null, ["Failed to delete the category !"]);
+            return NotFound(_response);
+
+        }
+
     }
 }

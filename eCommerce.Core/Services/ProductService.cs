@@ -81,7 +81,7 @@ namespace eCommerce.Core.Services
 
 
             existingProduct.Categories = categoryList;
-            existingProduct.UpdatedDate = DateTime.Now;
+            existingProduct.UpdatedDate = DateTime.UtcNow;
 
             _unitOfWork.Products.UpdateAsync(existingProduct);
             var result = await _unitOfWork.SaveChangesAsync();

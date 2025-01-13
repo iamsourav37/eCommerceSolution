@@ -39,6 +39,7 @@ namespace eCommerce.Core.Mappings
 
             CreateMap<AddressCreateDto, Address>();
             CreateMap<Address, AddressDto>();
+            CreateMap<AddressUpdateDto, Address>();
 
             #region For Customer
             CreateMap<CustomerCreateDto, Customer>();

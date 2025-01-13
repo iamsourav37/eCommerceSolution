@@ -14,6 +14,7 @@ namespace eCommerce.Core.Interfaces.ServiceContracts
         Task<List<CustomerDto>> GetAllCustomerAsync();
         Task<CustomerDto> GetCustomerByIdAsync(Guid customerId);
         Task<CustomerDto> UpdateCustomerAsync(CustomerUpdateDto customerUpdateDto);
+        Task<Guid> GetCustomerIdByAccountId(Guid accountId);
 
     }
 }

@@ -7,6 +7,7 @@ namespace eCommerce.Core.Interfaces.RepositoryContracts
         ICategoryRepository Categories { get; }
         IProductRepository Products { get; }
         ICustomerRepository Customers { get; }
+        IAddressRepository Addresses { get; }
 
         Task<int> SaveChangesAsync();
     }

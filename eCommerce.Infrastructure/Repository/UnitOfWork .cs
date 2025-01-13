@@ -15,6 +15,7 @@ namespace eCommerce.Infrastructure.Repository
         private ICustomerRepository _customerRepository;
         private IProductRepository _productRepository;
         private ICategoryRepository _categoryRepository;
+        private IAddressRepository _addressRepository;
 
 
         public UnitOfWork(ApplicationDbContext context)
@@ -26,6 +27,7 @@ namespace eCommerce.Infrastructure.Repository
         public ICustomerRepository Customers => _customerRepository ?? new CustomerRepository(_context);
         public IProductRepository Products => _productRepository ?? new ProductRepository(_context);
         public ICategoryRepository Categories => _categoryRepository ?? new CategoryRepository(_context);
+        public IAddressRepository Addresses => _addressRepository ?? new AddressRepository(_context);
 
         public void Dispose()
         {

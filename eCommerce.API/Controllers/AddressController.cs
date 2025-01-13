@@ -43,7 +43,7 @@ namespace eCommerce.API.Controllers
         {
             if (!_currentUserCustomerId.HasValue)
             {
-                _currentUserCustomerId = await _customerService.GetCustomerIdByAccountId(CurrentUserId);
+                _currentUserCustomerId = (await _customerService.GetCustomerIdByAccountId(CurrentUserId)).Id;
             }
             return _currentUserCustomerId.Value;
         }

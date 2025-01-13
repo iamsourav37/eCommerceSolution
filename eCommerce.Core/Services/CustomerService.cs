@@ -50,10 +50,10 @@ namespace eCommerce.Core.Services
             return customerDto;
         }
 
-        public async Task<Guid> GetCustomerIdByAccountId(Guid accountId)
+        public async Task<CustomerDto> GetCustomerIdByAccountId(Guid accountId)
         {
             var customer = await _unitOfWork.Customers.GetCustomerIdByAccountId(accountId);
-            return customer.Id;
+            return _mapper.Map<CustomerDto>(customer);
         }
 
         public async Task<CustomerDto> UpdateCustomerAsync(CustomerUpdateDto customerUpdateDto)

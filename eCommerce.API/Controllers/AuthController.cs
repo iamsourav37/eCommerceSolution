@@ -1,4 +1,5 @@
 ﻿using eCommerce.API.Utility;
+using eCommerce.API.ViewModels;
 using eCommerce.Core.Domain;
 using eCommerce.Core.DTOs.AuthDto;
 using eCommerce.Core.DTOs.CustomerDTO;
@@ -97,7 +98,24 @@ namespace eCommerce.API.Controllers
                     var roles = await _userManager.GetRolesAsync(user);
                     // Create the JWT Token
                     var token = _tokenRepository.GenerateToken(user, roles.ToList());
-                    _response.SetResponse(true, 200, new { token = token, expiresIn = Constants.TOKEN_EXPIRES_TIME }, null);
+                   
+
+                    var customerDetails = await _customerService.GetCustomerIdByAccountId(user.Id);
+
+                    LoginResponse loginViewModel = new LoginResponse()
+                    {
+                        CustomerName = customerDetails.Name,
+                        CustomerId = customerDetails.Id,
+                        Email = user.Email,
+                        JwtToken = new JwtTokenDetails()
+                        {
+                            AuthToken = token,
+                            ExpiresInHours = Constants.TOKEN_EXPIRES_TIME
+                        }
+                    };
+
+
+                    _response.SetResponse(true, 200, loginViewModel, null);
                     return Ok(_response);
                 }
 

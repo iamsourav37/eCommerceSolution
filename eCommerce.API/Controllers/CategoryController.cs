@@ -74,6 +74,7 @@ namespace eCommerce.API.Controllers
             return Ok(_response);
         }
 
+        [Authorize(Roles = Constants.ADMIN_ROLE)]
         [HttpDelete("{categoryId:guid}")]
         public async Task<IActionResult> Delete(Guid categoryId)
         {

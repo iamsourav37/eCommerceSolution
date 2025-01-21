@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace eCommerce.Core.Domain
@@ -14,6 +15,7 @@ namespace eCommerce.Core.Domain
         public Product Product { get; set; }
 
         public Guid OrderId { get; set; }
+        [JsonIgnore]
         public Order Order { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedDate { get; set; } = DateTime.UtcNow;

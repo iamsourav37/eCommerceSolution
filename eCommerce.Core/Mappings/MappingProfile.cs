@@ -4,6 +4,8 @@ using eCommerce.Core.DTOs.AddressDTO;
 using eCommerce.Core.DTOs.Category;
 using eCommerce.Core.DTOs.CategoryDTO;
 using eCommerce.Core.DTOs.CustomerDTO;
+using eCommerce.Core.DTOs.LineItemDTO;
+using eCommerce.Core.DTOs.OrderDTO;
 using eCommerce.Core.DTOs.Product;
 using eCommerce.Core.DTOs.ProductDTO;
 using System;
@@ -37,9 +39,11 @@ namespace eCommerce.Core.Mappings
 
             #endregion
 
+            #region For Address
             CreateMap<AddressCreateDto, Address>();
             CreateMap<Address, AddressDto>();
             CreateMap<AddressUpdateDto, Address>();
+            #endregion
 
             #region For Customer
             CreateMap<CustomerCreateDto, Customer>();
@@ -47,10 +51,14 @@ namespace eCommerce.Core.Mappings
                 .ForMember(dest => dest.Addresses, opt => opt.MapFrom(src => src.Addresses)); ;
             CreateMap<CustomerUpdateDto, Customer>()
                 .ForMember(dest => dest.Addresses, opt => opt.MapFrom(src => src.Addresses));
+            #endregion
+
+            #region For Order
+            CreateMap<OrderDto, Order>().ReverseMap();
 
             #endregion
 
-
+            CreateMap<LineItem, LineItemDto>();
         }
     }
 }

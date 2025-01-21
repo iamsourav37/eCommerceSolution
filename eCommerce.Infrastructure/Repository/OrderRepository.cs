@@ -16,9 +16,18 @@ namespace eCommerce.Infrastructure.Repository
         {
         }
 
+        public async Task<IEnumerable<Order>> GetOrderByCustomerIdAsync(Guid customerId)
+        {
+            return await this._dbSet.Where(order => order.CustomerId == customerId).Include(o => o.Customer)
+                                    .Include(o => o.LineItems)
+                                    .Include(o => o.ShippingAddress)
+                                    .ToListAsync();
+        }
+
         public async Task<IEnumerable<Order>> GetOrdersWithDetailsAsync()
         {
-            return await this._dbSet.Include(element => element.LineItems).ToListAsync();
+            return await this._dbSet.Include(o => o.LineItems)
+                                    .Include(o => o.ShippingAddress).ToListAsync();
         }
     }
 }

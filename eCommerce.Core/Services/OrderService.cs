@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using eCommerce.Core.Domain;
+using eCommerce.Core.DTOs.LineItemDTO;
 using eCommerce.Core.DTOs.OrderDTO;
+using eCommerce.Core.DTOs.Product;
 using eCommerce.Core.Interfaces.RepositoryContracts;
 using eCommerce.Core.Interfaces.ServiceContracts;
 using System;
@@ -53,7 +55,7 @@ namespace eCommerce.Core.Services
                 PaymentStatus = PaymentStatus.Unpaid,
                 LineItems = orderCreateDto.LineItems.Select(lineItem => new LineItem() { ProductId = lineItem.ProductId, Quantity = lineItem.Quantity, CreatedDate = DateTime.UtcNow, UpdatedDate = DateTime.UtcNow, }).ToList(),
                 TotalAmount = orderCreateDto.LineItems.Sum(li => productDictionary[li.ProductId] * li.Quantity)
-                
+
             };
 
             await _unitOfWork.Orders.AddAsync(order);
@@ -70,7 +72,57 @@ namespace eCommerce.Core.Services
         {
             var orderList = await _unitOfWork.Orders.GetOrderByCustomerIdAsync(customerId);
 
-            return _mapper.Map<List<OrderDto>>(orderList);
+
+            var orderDtoList = orderList.Select(static order => new OrderDto()
+            {
+                Id = order.Id,
+                CreatedDate = order.CreatedDate,
+                UpdatedDate = order.UpdatedDate,
+                Status = order.Status,
+                OrderDate = order.OrderDate,
+                PaymentStatus = order.PaymentStatus,
+                TotalAmount = order.TotalAmount,
+                ShippingAddress = new DTOs.AddressDTO.AddressDto()
+                {
+                    Id = order.ShippingAddress.Id,
+                    AddressLine1 = order.ShippingAddress.AddressLine1,
+                    AddressLine2 = order.ShippingAddress.AddressLine2,
+                    City = order.ShippingAddress.City,
+                    Country = order.ShippingAddress.Country,
+                    FullName = order.ShippingAddress.FullName,
+                    Landmark = order.ShippingAddress.Landmark,
+                    PhoneNumber = order.ShippingAddress.PhoneNumber,
+                    PinCode = order.ShippingAddress.PinCode,
+                    State = order.ShippingAddress.State,
+                },
+                Customer = new DTOs.CustomerDTO.CustomerDto()
+                {
+                    Id = order.Customer.Id,
+                    Name = order.Customer.Name,
+                    CreatedDate = order.Customer.CreatedDate,
+                    UpdatedDate = order.Customer.UpdatedDate,
+                },
+                LineItems = order.LineItems.Select(li =>
+                {
+                   return new LineItemDto()
+                    {
+                        Id = li.Id,
+                        Quantity = li.Quantity,
+                        Product = new ProductDto()
+                        {
+                            Id = li.Product.Id,
+                            Name = li.Product.Name,
+                            Price = li.Product.Price,
+                            Description = li.Product.Description,
+                            Quantity = li.Product.Quantity,
+                            Categories = null
+                        }
+                    };
+                }).ToList(),
+            }).ToList();
+
+            return orderDtoList;
+            //return _mapper.Map<List<OrderDto>>(orderList);
         }
 
         public async Task<OrderDto> GetOrderById(Guid customerId, Guid orderId)

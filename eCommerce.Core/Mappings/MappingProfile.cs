@@ -8,11 +8,7 @@ using eCommerce.Core.DTOs.LineItemDTO;
 using eCommerce.Core.DTOs.OrderDTO;
 using eCommerce.Core.DTOs.Product;
 using eCommerce.Core.DTOs.ProductDTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace eCommerce.Core.Mappings
 {

@@ -19,7 +19,7 @@ namespace eCommerce.Infrastructure.Repository
         public async Task<IEnumerable<Order>> GetOrderByCustomerIdAsync(Guid customerId)
         {
             return await this._dbSet.Where(order => order.CustomerId == customerId).Include(o => o.Customer)
-                                    .Include(o => o.LineItems)
+                                    .Include(o => o.LineItems).ThenInclude(li => li.Product)
                                     .Include(o => o.ShippingAddress)
                                     .ToListAsync();
         }

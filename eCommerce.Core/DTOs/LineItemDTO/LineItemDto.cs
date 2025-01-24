@@ -11,9 +11,8 @@ namespace eCommerce.Core.DTOs.LineItemDTO
     {
         public Guid Id { get; set; }
 
-        public ICollection<ProductDto> Products { get; set; }
-
-        public double TotalPrice { get; set; }
+        public ProductDto Product { get; set; }
+        public int Quantity { get; set; }
 
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }

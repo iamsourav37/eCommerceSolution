@@ -24,7 +24,7 @@ namespace eCommerce.Core.DTOs.OrderDTO
 
 
         // Customer Information
-        public CustomerDto CustomerDto { get; set; }
+        public CustomerDto Customer { get; set; }
 
         // Shipping Information
         public AddressDto ShippingAddress { get; set; }

@@ -8,6 +8,7 @@ using eCommerce.Core.DTOs.LineItemDTO;
 using eCommerce.Core.DTOs.OrderDTO;
 using eCommerce.Core.DTOs.Product;
 using eCommerce.Core.DTOs.ProductDTO;
+using eCommerce.Core.DTOs.WishlistDTO;
 
 
 namespace eCommerce.Core.Mappings
@@ -54,7 +55,14 @@ namespace eCommerce.Core.Mappings
 
             #endregion
 
+            #region LineItem
             CreateMap<LineItem, LineItemDto>();
+            #endregion
+
+            #region Wishlist
+            CreateMap<WishlistCreateDto, Wishlist>();
+            CreateMap<WishlistDto, Wishlist>().ReverseMap();
+            #endregion
         }
     }
 }

@@ -39,6 +39,7 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IWishlistService, WishlistService>();
 // Add AutoMapper with the assembly containing the Profile
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 #endregion

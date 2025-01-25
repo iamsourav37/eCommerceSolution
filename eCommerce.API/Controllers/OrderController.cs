@@ -1,11 +1,13 @@
 ﻿using eCommerce.API.Utility;
 using eCommerce.Core.DTOs.OrderDTO;
 using eCommerce.Core.Interfaces.ServiceContracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eCommerce.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OrderController : ControllerBase
